@@ -1,0 +1,28 @@
+{% extends 'myapp/base.html' %}
+
+{% block body_block %}
+<h1>Category details page</h1>
+{% if cat_list %}
+        {% for cat in cat_list %}
+            {%  if cat.id == cat_no %}
+                <h3> Category: </h3>
+                <li> {{ cat }}</li>
+                <h3> Location of warehouse </h3>
+                <li> {{ cat.warehouse }}</li>
+            {% endif %}
+        {% endfor %}
+{% else %}
+    <strong>There are no available categories!</strong>
+{% endif %}
+{% if prod_list %}
+    <h2>Products of the category</h2>
+        {% for prod in prod_list %}
+            {%  if prod.category_id == cat_no %}
+                <li> {{ prod.name }}</li>
+            {% endif %}
+        {% endfor %}
+{% else %}
+    <br>
+    <strong>There are no available products!</strong>
+{% endif %}
+{% endblock %}
