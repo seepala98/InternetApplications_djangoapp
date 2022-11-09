@@ -1,0 +1,10 @@
+{% extends "myapp/base.html" %}
+{#{% load staticfiles %}#}
+{% block body_block %}
+    <h1>Products</h1>
+    <ul>
+        {% for product in prod_list %}
+            <li>{{ product.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
