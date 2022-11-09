@@ -3,4 +3,13 @@
 {% block body_block %}
 
 Product Name: {{ product.name }}
+<br/>
 Interested People : {{ product.interested }}
+<br/>
+Price: {{ product.price }}
+<form action="/myapp/products/{{ product.id }}/" method="POST">
+{% csrf_token %}
+    {{  form }}
+<input type="submit" value="Submit">
+</form>
+{% endblock %}
