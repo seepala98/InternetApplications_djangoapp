@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, HttpResponseNotFound
 
-from .forms import OrderForm
+from .forms import OrderForm, InterestForm
 from .models import Category, Product, Client, Order
 from django.shortcuts import render, get_object_or_404
 
@@ -32,10 +32,6 @@ def products(request):
     return render(request, 'myapp/products.html', {'prod_list': prod_list})
 
 
-# Define another view place_order(request) in your views.py file. When the user goes to url
-# myapp/place_order, the view will display a list of products in the database along with their
-# prices and provide a form for the user place an order for a product
-
 def place_order(request):
     msg = ''
     prodlist = Product.objects.all()
@@ -46,9 +42,27 @@ def place_order(request):
             if order.num_units <= order.product.stock:
                 order.save()
                 msg = 'Your order has been placed successfully.'
+                order.product.stock -= order.num_units
             else:
-                msg = 'We do not have suffucient stock to fill your order.'
-            return render(request, 'myapp/place_order.html', {'msg': msg})
+                msg = 'We do not have sufficient stock to fill your order.'
+            return render(request, 'myapp/order_response.html', {'msg': msg})
     else:
         form = OrderForm()
-    return render(request, 'myapp/place_order.html', {'form': form, 'msg': msg, 'prodlist': prodlist})
+    return render(request, 'myapp/placeorder.html', {'form':form, 'msg':msg, 'prodlist':prodlist})
+
+
+def productdetail(request, prod_id):
+    product = Product.objects.get(pk=prod_id)
+    if request.method == "POST":
+        form = InterestForm(request.POST)
+        if form.is_valid() and int(form.cleaned_data['interested']) == 1:
+            product.interested += 1
+            product.save()
+            msg = 'Order was successful'
+            return render(request, 'myapp/order_response.html', {'msg': msg})
+        else:
+            msg = 'Some error occured in passing the form'
+            return render(request,'myapp/order_response.html', {'msg': msg})
+    else:
+        form = InterestForm()
+    return render(request, 'myapp/productdetail.html', {'form': form, 'product': product})
