@@ -103,7 +103,7 @@ def user_logout(request):
 def myorders(request):
     current_user = request.user
     msg = ""
-    if current_user.is_staff:
+    if not current_user.is_active:
         msg = "You are not a Registered Client"
         return render(request, 'myapp/myorders.html', {'msg': msg})
     else:
