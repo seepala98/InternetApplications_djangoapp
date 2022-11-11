@@ -19,3 +19,8 @@ class InterestForm(forms.Form):
     interested = forms.ChoiceField(choices=[(1, 'Yes'), (0, 'No')], widget=forms.RadioSelect)
     quantity = forms.IntegerField(min_value=1, initial=1)
     comments = forms.CharField(widget=forms.Textarea, label='Additional Comments', required=False)
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=50)
+    password = forms.CharField(widget=forms.PasswordInput)
