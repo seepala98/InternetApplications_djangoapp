@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -13,13 +15,27 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 def index(request):
+    if request.session.get('last_login') is None:
+        last_login = request.session.get('last_login')
+        last_login_flag = True
+    else:
+        last_login = 'Your last login was more than one hour ago'
+        last_login_flag = False
     cat_list = Category.objects.all().order_by('id')[:10]
     prod_list = Product.objects.all().order_by('id')[:10]
-    return render(request, 'myapp/index.html', {'cat_list': cat_list, 'prod_list': prod_list})
+    return render(request, 'myapp/index.html', {'cat_list': cat_list, 'prod_list': prod_list, 'last_login': last_login,
+                                                'last_login_flag': last_login_flag})
 
 
 def about(request):
-    return render(request, 'myapp/about.html')
+    if request.COOKIES.get('about_visits'):
+        visits = int(request.COOKIES.get('about_visits'))
+        visits += 1
+    else:
+        visits = 1
+    response = render(request, 'myapp/about.html', {'visits': visits})
+    response.set_cookie('about_visits', visits, max_age=300)
+    return response
 
 
 def detail(request, cat_no):
@@ -83,6 +99,8 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
+                request.session['last_login'] = str(datetime.now())
+                request.session.set_expiry(3600)
                 return HttpResponseRedirect(reverse('myapp:index'))
             else:
                 return HttpResponse("Your account is disabled.")
