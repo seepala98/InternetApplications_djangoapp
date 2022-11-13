@@ -2,21 +2,19 @@
 
 {% block body_block %}
     <h1>Place Order</h1>
+    {% if prodlist %}
+    <ul>
+    <li> Product Name - Product price - Product stock </li>
+    {% for product in prodlist %}
+        <li>{{ product.name }} - {{ product.price }} - {{ product.stock }}</li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>No products in cart.</p>
+    {% endif %}
     <form action="{% url 'myapp:place_order' %}" method="post">
         {% csrf_token %}
-        <table>
-            <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-            </tr>
-            {% for product in prod_list %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <input type="submit" value="Place Order" />
+        {{ form }}
+        <input type="submit" value="Submit" />
     </form>
 {% endblock %}
