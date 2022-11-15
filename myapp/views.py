@@ -15,7 +15,7 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 def index(request):
-    if request.session.get('last_login') is None:
+    if request.session.get('last_login'):
         last_login = request.session.get('last_login')
         last_login_flag = True
     else:
