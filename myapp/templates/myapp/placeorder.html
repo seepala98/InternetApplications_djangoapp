@@ -15,6 +15,7 @@
     <form action="{% url 'myapp:place_order' %}" method="post">
         {% csrf_token %}
         {{ form }}
+        {{ msg }}
         <input type="submit" value="Submit" />
     </form>
 {% endblock %}

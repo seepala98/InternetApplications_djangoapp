@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import OrderForm, InterestForm, LoginForm
+from .forms import OrderForm, InterestForm, LoginForm, RegisterForm
 from .models import Category, Product, Client, Order
 from django.shortcuts import render, get_object_or_404
 
@@ -51,7 +51,7 @@ def products(request):
     return render(request, 'myapp/products.html', {'prod_list': prod_list})
 
 
-@login_required
+@login_required(login_url='/myapp/login')
 def place_order(request):
     msg = ''
     prodlist = Product.objects.all()
@@ -60,13 +60,14 @@ def place_order(request):
         if form.is_valid():
             order = form.save(commit=False)
             if order.num_units <= order.product.stock:
-                order.save()
-                msg = 'Your order has been placed successfully.'
                 order.product.stock -= order.num_units
                 order.product.save()
+                order.save()
+                msg = 'Your order has been placed successfully.'
+                return render(request, 'myapp/placeorder.html', {'msg': msg})
             else:
                 msg = 'We do not have sufficient stock to fill your order.'
-            return render(request, 'myapp/order_response.html', {'msg': msg})
+            return render(request, 'myapp/placeorder.html', {'msg': msg})
     else:
         form = OrderForm()
     return render(request, 'myapp/placeorder.html', {'form': form, 'msg': msg, 'prodlist': prodlist})
@@ -117,7 +118,7 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('myapp:index'))
 
 
-@login_required
+@login_required(login_url='/myapp/login')
 def myorders(request):
     current_user = request.user
     msg = ""
@@ -130,3 +131,18 @@ def myorders(request):
         return render(request, 'myapp/myorders.html', {'msg': msg, 'firstname': current_user.first_name,
                                                        'lastname': current_user.last_name,
                                                        'order_list': order_list, 'interested_in': interested_in})
+
+
+# Define a ‘register’ view that allows a user to register as a Client. Update myapp/urls.py with a
+# suitable pattern and create register.html to display and process the registration form.
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.set_password(user.password)
+            user.save()
+            return HttpResponseRedirect(reverse('myapp:index'))
+    else:
+        form = RegisterForm()
+    return render(request, 'myapp/register.html', {'form': form})

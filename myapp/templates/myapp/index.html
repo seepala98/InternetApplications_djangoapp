@@ -1,31 +1,46 @@
 {% extends 'myapp/base.html' %}
 
 {% block body_block %}
-    {% if last_login_flag == True %}
-        <p>Last Login @{{ last_login }}</p>
+<div class="jumbotron">
+    <hr class="my-4">
+    <p class="lead">
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{% url 'myapp:user_logout' %}" role="button">Logout</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'myapp:myorders' %}" role="button">myorders</a>
+        {% if last_login_flag == True %}
+    <p>Last Login @{{ last_login }}</p>
     {% else %}
-        {{ last_login }}
+    {{ last_login }}
     {% endif %}
-{% if cat_list %}
+    {% if cat_list %}
     <h2>List of Categories</h2>
     <ol>
         {% for cat in cat_list %}
-            <li>
-                <a href="{% url 'myapp:detail' cat.id %}">{{ cat.name }}</a>
-            </li>
+        <li>
+            <a href="{% url 'myapp:detail' cat.id %}">{{ cat.name }}</a>
+        </li>
         {% endfor %}
     </ol>
-{% else %}
+    {% else %}
     <strong>There are no available categories!</strong>
-{% endif %}
-{%  if prod_list %}
+    {% endif %}
+    {% if prod_list %}
     <h2>List of Products</h2>
     <ol>
         {% for prod in prod_list %}
-            <li> {{ prod.name}} </li>
+        <li> {{ prod.name}} </li>
         {% endfor %}
     </ol>
-{% else %}
+    {% else %}
     <strong>There are no available products!</strong>
-{% endif %}
+    {% endif %}
+    {% else %}
+    <p> You are not logged in please login if u have an accout if not create a new account</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'myapp:user_login' %}" role="button">Sign in</a>
+    <br>
+    <a class="btn btn-primary btn-lg" href="{% url 'myapp:register' %}" role="button">Sign up</a>
+    {% endif %}
+    </p>
+</div>
+
 {% endblock %}

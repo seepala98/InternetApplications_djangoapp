@@ -9,17 +9,26 @@
         <h2> User first name: {{ firstname }}</h2>
         <h2> User last name: {{ lastname }}</h2>
         <h1> Ordered Items </h1>
+        {% if order_list %}
         <ul>
             {% for order in order_list %}
                 <li> {{ order }} </li>
             {% endfor %}
         </ul>
+        {% else %}
+            <h3> No orders yet </h3>
+        {% endif %}
         <h1> Interested Items</h1>
+
+        {% if interested_in %}
         <ul>
             {% for interest in interested_in %}
                 <li> {{ interest }} </li>
             {% endfor %}
         </ul>
+        {% else %}
+            <h3> No interests yet </h3>
+        {% endif %}
     {% endif %}
     <li class="hbar1"><a href="{% url 'myapp:index' %}place_order">Click here to place an order</a></li>
 {% endblock %}
