@@ -133,8 +133,6 @@ def myorders(request):
                                                        'order_list': order_list, 'interested_in': interested_in})
 
 
-# Define a ‘register’ view that allows a user to register as a Client. Update myapp/urls.py with a
-# suitable pattern and create register.html to display and process the registration form.
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
