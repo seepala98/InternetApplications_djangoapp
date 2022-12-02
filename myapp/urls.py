@@ -14,5 +14,4 @@ urlpatterns = [
     path(r'products/', views.products, name='products'),
     path(r'products/<int:prod_id>/', views.productdetail, name='productdetail'),
     path(r'place_order/', views.place_order, name='place_order'),
-
  ]

@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from random import sample
+import crispy_forms.helper
+
+
+from django.contrib import staticfiles
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +32,7 @@ SECRET_KEY = 'django-insecure-zso9t4p27bs6mk1q_ud_7p@ch^_d(fm2#w3ht-30$u4i#^z6_p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp.apps.MyappConfig',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -119,8 +127,28 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'sample')
+MEDIA_URL = '/sample/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'sample')
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_DIR, 'fixtures'),
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [ 'https://seepala98-glorious-spork-wvgw79vq4g73v97j-8000.preview.app.github.dev' ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "DjangoIdleDevs@gmail.com"
+EMAIL_HOST_PASSWORD = "ozqdsrrsakggjipz"

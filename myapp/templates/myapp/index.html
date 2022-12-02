@@ -5,6 +5,7 @@
     <hr class="my-4">
     <p class="lead">
         {% if user.is_authenticated %}
+            <img src="{{ user.image }}" style="width: 150px; height: 150px; border-radius: 50%; margin-right: 25px;">
         <a class="btn btn-primary btn-lg" href="{% url 'myapp:user_logout' %}" role="button">Logout</a>
         <a class="btn btn-primary btn-lg" href="{% url 'myapp:myorders' %}" role="button">myorders</a>
         {% if last_login_flag == True %}

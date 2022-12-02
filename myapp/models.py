@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from PIL import Image
 
 # Create your models here.
 class Category(models.Model):
@@ -47,6 +47,7 @@ class Client(User):
             'QC', 'Quebec'
         ),
     ]
+
     company = models.CharField(max_length=50, blank=True, null=True)
     shipping_address = models.CharField(max_length=300, null=True,
                                         blank=True)
@@ -54,9 +55,9 @@ class Client(User):
     province = models.CharField(max_length=2, choices=PROVINCE_CHOICES,
                                 default='ON')
     interested_in = models.ManyToManyField(Category)
-
+    image = models.ImageField(upload_to='images/', blank=True)
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return self.first_name
 
 
 class Order(models.Model):

@@ -1,5 +1,7 @@
 from django import forms
 from myapp.models import Order, Product, Client, Category
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -19,45 +21,8 @@ class InterestForm(forms.Form):
     quantity = forms.IntegerField(min_value=1, initial=1)
     comments = forms.CharField(widget=forms.Textarea, label='Additional Comments', required=False)
 
-
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=50)
-    password = forms.CharField(widget=forms.PasswordInput)
-
-class RegisterForm(forms.ModelForm):
-
-    username = forms.CharField(max_length=50)
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
-    email = forms.EmailField(widget=forms.EmailInput)
+class SignUpForm(UserCreationForm):
     class Meta:
         model = Client
-        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'company', 'shipping_address', 'city',
-                  'province']
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
-        labels = {
-            'username': 'Username',
-            'password': 'Password',
-            'first_name': 'First Name',
-            'last_name': 'Last Name',
-            'email': 'Email',
-            'company': 'Company',
-            'shipping_address': 'Shipping Address',
-            'city': 'City',
-            'province': 'Province',
-        }
-        help_texts = {
-            'username': 'Please enter your username',
-        }
-        error_messages = {
-            'username': {
-                'max_length': 'This username is too long',
-            },
-        }
-        success_messages = {
-            'username': {
-                'max_length': 'This username is too long',
-            },
-        }
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'company',
+                  'shipping_address', 'city', 'province', 'interested_in', 'image')

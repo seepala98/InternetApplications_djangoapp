@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import OrderForm, InterestForm, LoginForm, RegisterForm
+from .forms import OrderForm, InterestForm, SignUpForm
 from .models import Category, Product, Client, Order
 from django.shortcuts import render, get_object_or_404
 
@@ -21,9 +21,10 @@ def index(request):
     else:
         last_login = 'Your last login was more than one hour ago'
         last_login_flag = False
+
     cat_list = Category.objects.all().order_by('id')[:10]
     prod_list = Product.objects.all().order_by('id')[:10]
-    return render(request, 'myapp/index.html', {'cat_list': cat_list, 'prod_list': prod_list, 'last_login': last_login,
+    return render(request, 'myapp/index.html', {'cat_list': cat_list, 'prod_list': prod_list, 'user': request.user, 'last_login': last_login,
                                                 'last_login_flag': last_login_flag})
 
 
@@ -93,7 +94,7 @@ def productdetail(request, prod_id):
 
 def user_login(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        # form = LoginForm(request.POST)
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
@@ -102,14 +103,15 @@ def user_login(request):
                 login(request, user)
                 request.session['last_login'] = str(datetime.now())
                 request.session.set_expiry(3600)
+                if 'next' in request.POST:
+                    return redirect(request.POST.get('next'))
                 return HttpResponseRedirect(reverse('myapp:index'))
             else:
                 return HttpResponse("Your account is disabled.")
         else:
             return HttpResponse("Invalid login details")
     else:
-        form = LoginForm()
-        return render(request, 'myapp/login.html', {'form': form})
+        return render(request, 'myapp/login.html')
 
 
 @login_required
@@ -132,15 +134,18 @@ def myorders(request):
                                                        'lastname': current_user.last_name,
                                                        'order_list': order_list, 'interested_in': interested_in})
 
-
 def register(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.set_password(user.password)
-            user.save()
+            form.save()
+            username = form.cleaned_data.get('username')
+            pwd = form.cleaned_data.get('password1')
+
+            user = authenticate(username=username, password=pwd)
+            login(request, user)
             return HttpResponseRedirect(reverse('myapp:index'))
-    else:
-        form = RegisterForm()
+        else:
+            return HttpResponse('Invalid')
+    form = SignUpForm()
     return render(request, 'myapp/register.html', {'form': form})
